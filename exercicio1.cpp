@@ -1,69 +1,32 @@
 #include <iostream>
+#include <fstream>
 #include <windows.h>
-#define NUM_CONTAS 5
 
 using namespace std;
 
-typedef struct Banco
+int contaLinhas()
 {
-    int num;
-    char titular[35];
-    float saldo;
-};
-
-Banco cadastraConta()
-{
-    Banco conta;
-    cout << "Número da conta: ";
-    cin >> conta.num;
-    cout << "Titular: ";
-    cin >> conta.titular;
-    cout << "Saldo: ";
-    cin >> conta.saldo;
-    cout << "\n";
-    return conta;
-}
-
-void preencheContas(Banco contas[])
-{
-    for (int i = 0; i < NUM_CONTAS; i++)
+    ifstream arquivo;
+    arquivo.open("numeros.txt");
+    int linhas = 0;
+    if (!arquivo.is_open())
     {
-        contas[i] = cadastraConta();
+        cerr << "ERRO! Não foi possível abrir o arquivo.\n";
+        arquivo.clear();
+        return -1;
     }
-}
 
-Banco encontraMaior(Banco contas[])
-{
-    Banco maior = contas[0];
-    for (int i = 0; i < NUM_CONTAS; i++)
+    cout << "Arquivo aberto com sucesso!\n";
+
+    while (!arquivo.eof())
     {
-        if (contas[i].saldo > maior.saldo)
-        {
-            maior = contas[i];
-        }
+        arquivo.ignore();
+        arquivo.get();
+        arquivo.ignore();
+        linhas++;
     }
-    return maior;
-}
-
-Banco encontraMenor(Banco contas[])
-{
-    Banco menor = contas[0];
-    for (int i = 0; i < NUM_CONTAS; i++)
-    {
-        if (contas[i].saldo < menor.saldo)
-        {
-            menor = contas[i];
-        }
-    }
-    return menor;
-}
-
-void imprimeConta(Banco conta)
-{
-    cout << "Conta: " << conta.num << endl;
-    cout << "Titular: " << conta.titular << endl;
-    cout << "Saldo: R$ " << conta.saldo << endl;
-    cout << "\n";
+    arquivo.close();
+    return linhas;
 }
 
 int main()
@@ -71,19 +34,8 @@ int main()
     UINT CPAGE_UTF8 = 65001;
     SetConsoleOutputCP(CPAGE_UTF8);
 
-    Banco contas[NUM_CONTAS];
+    cout << "Linhas do arquivo: " << contaLinhas() << endl;
 
-    preencheContas(contas);
-
-    Banco maior_conta, menor_conta;
-    maior_conta = encontraMaior(contas);
-    menor_conta = encontraMenor(contas);
-
-    system("cls");
-
-    cout << "Conta com o maior saldo:" << endl;
-    imprimeConta(maior_conta);
-    cout << "Conta com o menor saldo:" << endl;
-    imprimeConta(menor_conta);
+    cout << endl;
     return 0;
 }
